@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rea-light-mcp — Reverse-engineer anything, 4 flat tools</title>
+<meta name="description" content="rea-light-mcp: a lightweight MCP facade over REA. 4 flat tools, depth-1 schemas, all 139 REA capabilities behind. Works with strict AI models.">
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#30363d;
+    --txt:#e6edf3; --mut:#9aa7b4; --acc:#58a6ff; --grn:#3fb950; --amb:#d29922; --red:#f85149;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px 80px}
+  header.hero{padding:72px 0 36px;text-align:center}
+  .kicker{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 14px;color:var(--mut);font-size:13px;letter-spacing:.4px}
+  h1{font-size:clamp(34px,6vw,56px);line-height:1.12;margin:22px 0 10px}
+  h1 .lt{color:var(--grn)}
+  .sub{color:var(--mut);font-size:18px;max-width:700px;margin:0 auto}
+  .cta{margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px}
+  .btn.p{background:var(--grn);color:#04120a}
+  .btn.g{border:1px solid var(--line);color:var(--txt);background:var(--panel)}
+  .badges{margin-top:22px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges img{height:20px}
+  section{margin-top:56px}
+  h2{font-size:26px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  h3{font-size:18px;margin:26px 0 8px}
+  p.mut{color:var(--mut)}
+  .grid{display:grid;gap:14px}
+  @media(min-width:720px){.grid.c2{grid-template-columns:1fr 1fr}.grid.c4{grid-template-columns:repeat(4,1fr)}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .card b.t{display:block;font-size:15px;margin-bottom:4px}
+  .card code{font-family:var(--mono);font-size:13px;color:var(--acc)}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mut);font-weight:600}
+  td code{font-family:var(--mono);font-size:13px;color:var(--acc)}
+  pre{background:#010409;border:1px solid var(--line);border-radius:10px;padding:16px;overflow:auto;font-family:var(--mono);font-size:13px;line-height:1.55}
+  .ok{color:var(--grn)} .warn{color:var(--amb)} .bad{color:var(--red)}
+  .step{display:flex;gap:14px;margin:14px 0}
+  .n{flex:0 0 32px;height:32px;border-radius:50%;background:var(--panel2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--acc)}
+  /* quiz */
+  #quiz{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px}
+  #qtext{font-size:18px;font-weight:600;margin:6px 0 4px}
+  #qlevel{font-size:12.5px;color:var(--mut);letter-spacing:.5px;text-transform:uppercase}
+  .opt{display:block;width:100%;text-align:left;margin:9px 0;padding:11px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-size:15px;cursor:pointer}
+  .opt:hover:not(:disabled){border-color:var(--acc)}
+  .opt:disabled{cursor:default;opacity:.92}
+  .opt.right{border-color:var(--grn);background:rgba(63,185,80,.12)}
+  .opt.wrong{border-color:var(--red);background:rgba(248,81,73,.10)}
+  #why{margin-top:12px;padding:12px 14px;border-left:3px solid var(--acc);background:var(--panel2);border-radius:0 8px 8px 0;display:none;font-size:14.5px}
+  #qbar{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px;flex-wrap:wrap}
+  #score{color:var(--mut);font-size:14px}
+  #next{display:none;padding:9px 20px;border-radius:8px;border:0;background:var(--acc);color:#04121f;font-weight:700;cursor:pointer;font-size:14.5px}
+  #verdict{display:none;text-align:center;padding:26px 10px}
+  #verdict .big{font-size:44px}
+  footer{margin-top:64px;color:var(--mut);font-size:13.5px;text-align:center}
+  a{color:var(--acc)}
+  svg.diagram{width:100%;height:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker">4 tools &middot; 139 capabilities &middot; depth-1 schemas</span>
+    <h1>rea<span class="lt">-light</span>-mcp</h1>
+    <p class="sub">Reverse-engineer shipped software with your AI agent — binaries, apps, APKs, firmware — through <b>4 tiny tools</b> that strict AI models accept, with the full power of REA hidden behind them.</p>
+    <div class="cta">
+      <a class="btn p" href="#install">Install in 2 minutes</a>
+      <a class="btn g" href="#quiz">Take the quiz</a>
+      <a class="btn g" href="https://www.npmjs.com/package/rea-light-mcp">npm package</a>
+    </div>
+    <div class="badges">
+      <img alt="npm version" src="https://img.shields.io/npm/v/rea-light-mcp">
+      <img alt="license MIT" src="https://img.shields.io/npm/l/rea-light-mcp">
+      <img alt="node" src="https://img.shields.io/badge/node-%3E%3D18-339933?logo=nodedotjs&amp;logoColor=white">
+      <img alt="MCP" src="https://img.shields.io/badge/MCP-stdio-5c4ee5">
+      <img alt="tools" src="https://img.shields.io/badge/tools-4-flat-brightgreen">
+    </div>
+  </header>
+
+  <section id="problem">
+    <h2>The problem it solves</h2>
+    <p>Full reverse-engineering servers expose <b>~139 tools with deeply nested settings</b> (~1.9&nbsp;MB of schemas, nesting up to 14 levels). Strict AI models reject <b>any request</b> when a single tool breaks their limits — even a plain <code>hi</code>:</p>
+    <div class="grid c2">
+      <div class="card"><b class="t bad">Before: full catalog</b><span class="mut">139 tools &middot; ~1.9&nbsp;MB schemas &middot; depth 14 &middot; recursive references &middot; rejected by strict models</span></div>
+      <div class="card"><b class="t ok">After: rea-light-mcp</b><span class="mut">4 tools &middot; ~1.5&nbsp;KB schemas &middot; depth 1&ndash;2 &middot; zero references &middot; accepted everywhere</span></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2>How it works</h2>
+    <svg class="diagram" viewBox="0 0 920 250" role="img" aria-label="Architecture: agent talks to 4 hub tools, hub talks to full REA">
+      <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9" fill="none" stroke="#58a6ff" stroke-width="1.6"/></marker></defs>
+      <rect x="20" y="70" width="180" height="110" rx="10" fill="#1c2330" stroke="#30363d"/><text x="110" y="105" fill="#e6edf3" text-anchor="middle" font-size="15" font-weight="700">Your agent</text><text x="110" y="128" fill="#9aa7b4" text-anchor="middle" font-size="12">sees 4 tools</text><text x="110" y="146" fill="#9aa7b4" text-anchor="middle" font-size="12">~1.5 KB</text>
+      <rect x="280" y="30" width="190" height="52" rx="10" fill="#161b22" stroke="#3fb950"/><text x="375" y="52" fill="#3fb950" text-anchor="middle" font-size="13" font-weight="700">rea_search</text><text x="375" y="68" fill="#9aa7b4" text-anchor="middle" font-size="11">find a capability</text>
+      <rect x="280" y="92" width="190" height="52" rx="10" fill="#161b22" stroke="#3fb950"/><text x="375" y="114" fill="#3fb950" text-anchor="middle" font-size="13" font-weight="700">rea_describe</text><text x="375" y="130" fill="#9aa7b4" text-anchor="middle" font-size="11">schema as text</text>
+      <rect x="280" y="154" width="190" height="52" rx="10" fill="#161b22" stroke="#3fb950"/><text x="375" y="176" fill="#3fb950" text-anchor="middle" font-size="13" font-weight="700">rea_call</text><text x="375" y="192" fill="#9aa7b4" text-anchor="middle" font-size="11">run it (args as string)</text>
+      <rect x="280" y="216" width="190" height="26" rx="10" fill="#161b22" stroke="#3fb950"/><text x="375" y="233" fill="#3fb950" text-anchor="middle" font-size="12" font-weight="700">rea_investigate</text>
+      <line x1="200" y1="125" x2="278" y2="60" stroke="#58a6ff" stroke-width="1.6" marker-end="url(#ar)"/><line x1="200" y1="125" x2="278" y2="120" stroke="#58a6ff" stroke-width="1.6" marker-end="url(#ar)"/><line x1="200" y1="125" x2="278" y2="180" stroke="#58a6ff" stroke-width="1.6" marker-end="url(#ar)"/>
+      <rect x="560" y="55" width="340" height="140" rx="10" fill="#1c2330" stroke="#30363d"/><text x="730" y="85" fill="#e6edf3" text-anchor="middle" font-size="15" font-weight="700">Full REA (hidden)</text><text x="730" y="108" fill="#9aa7b4" text-anchor="middle" font-size="12">139 tools stay server-side</text><text x="730" y="128" fill="#9aa7b4" text-anchor="middle" font-size="12">same validation, same results</text><text x="730" y="148" fill="#9aa7b4" text-anchor="middle" font-size="12">session &amp; evidence preserved</text><text x="730" y="170" fill="#9aa7b4" text-anchor="middle" font-size="12">markdown answers, truncated</text>
+      <line x1="470" y1="125" x2="558" y2="125" stroke="#58a6ff" stroke-width="1.6" marker-end="url(#ar)"/>
+    </svg>
+    <p class="mut">The key trick: complex settings travel as a <b>plain text string</b> (<code>args_json</code>), so strict models only ever see flat settings. Real checking happens inside the server, unchanged.</p>
+  </section>
+
+  <section id="tools">
+    <h2>The 4 tools</h2>
+    <table>
+      <tr><th>Tool</th><th>Settings (all flat)</th><th>Use it for</th></tr>
+      <tr><td><code>rea_search</code></td><td><code>query</code>, <code>domain?</code>, <code>limit?</code></td><td>Find what REA can do: <code>decompile</code>, <code>apk</code>, <code>firmware</code>… returns short list, no heavy schemas.</td></tr>
+      <tr><td><code>rea_describe</code></td><td><code>name</code></td><td>Get one tool's full settings as readable text before running it.</td></tr>
+      <tr><td><code>rea_call</code></td><td><code>name</code>, <code>args_json</code></td><td>Run any of the 139 REA tools. Write-actions are blocked by default.</td></tr>
+      <tr><td><code>rea_investigate</code></td><td><code>target</code>, <code>question</code>, <code>depth?</code></td><td>One-shot answer: point at a file, ask one question, get markdown + evidence ids.</td></tr>
+    </table>
+  </section>
+
+  <section id="beginner">
+    <h2>🌱 Beginner guide — read this and you are a professional</h2>
+    <div class="step"><div class="n">1</div><div><b>What is MCP?</b> A standard plug for AI assistants. A "server" is a small program that gives your assistant new skills (tools). You configure it once; every chat can then use it.</div></div>
+    <div class="step"><div class="n">2</div><div><b>What is reverse engineering?</b> Learning how a finished program works <i>without</i> its source code — which buttons do what, where data flows, how a file format is built. It uses only software you own or are allowed to examine.</div></div>
+    <div class="step"><div class="n">3</div><div><b>Why the "light" version?</b> The full toolset is so big that strict AI models refuse to talk while it is connected. This package shows the model 4 simple tools and keeps the other 139 behind the curtain — same power, no refusal.</div></div>
+    <div class="step"><div class="n">4</div><div><b>Your first investigation.</b> Install (below), then ask: <i>"Using rea_investigate, open /usr/bin/ls and tell me what kind of binary it is."</i> You will get format, architecture and fingerprint plus what to ask next.</div></div>
+    <div class="step"><div class="n">5</div><div><b>The everyday loop.</b> <code>rea_search</code> to find → <code>rea_describe</code> to learn settings → <code>rea_call</code> to run. After this page's quiz you will know more than most interview candidates.</div></div>
+  </section>
+
+  <section id="install">
+    <h2>Install</h2>
+    <h3>No install needed — run from npm</h3>
+    <pre>npx -y rea-light-mcp</pre>
+    <h3>OpenCode config (<code>~/.config/opencode/opencode.jsonc</code>)</h3>
+    <pre>{
+  "mcp": {
+    "rea":       { "type": "local", "command": ["npx", "-y", "rea-agents@6.4.0", "mcp"], "enabled": false },
+    "rea-light": { "type": "local", "command": ["npx", "-y", "rea-light-mcp"], "enabled": true, "timeout": 120000 }
+  }
+}</pre>
+    <p class="mut">Disable full <code>rea</code> (that is what strict models reject). Restart the session after editing. First run downloads packages — give it a minute.</p>
+    <h3>Settings</h3>
+    <table>
+      <tr><th>Variable</th><th>Default</th><th>Meaning</th></tr>
+      <tr><td><code>REA_COMMAND</code></td><td><code>npx -y rea-agents@6.3.0 mcp</code></td><td>Which REA server runs behind the hub (pinned measured release).</td></tr>
+      <tr><td><code>REA_TIMEOUT_MS</code></td><td><code>120000</code></td><td>Per-call timeout; stdio serves calls one at a time.</td></tr>
+      <tr><td><code>REA_LIGHT_ALLOW_WRITE</code></td><td>unset (read-only)</td><td>Set to <code>1</code> to allow rename/comment tools.</td></tr>
+    </table>
+  </section>
+
+  <section id="stories">
+    <h2>Who uses it, for what</h2>
+    <div class="grid c2">
+      <div class="card"><b class="t">App developers</b><span class="mut">"How does this feature work in the app I admire?" — trace it, see the evidence, rebuild it cleanly in your own project.</span></div>
+      <div class="card"><b class="t">Security learners</b><span class="mut">Inspect binaries you own, practice reading assembly and metadata with an AI tutor that shows its sources.</span></div>
+      <div class="card"><b class="t">Students</b><span class="mut">From "what is a binary?" to reading call graphs — the quiz below takes you from zero to pro.</span></div>
+      <div class="card"><b class="t">Strict-model users</b><span class="mut">Anyone whose model rejects huge tool catalogs: 4 flat tools pass every known depth/size gate.</span></div>
+    </div>
+  </section>
+
+  <section id="quiz">
+    <h2>🎓 Interactive quiz — from scratch to pro</h2>
+    <p class="mut">8 questions, 3 levels. Each answer explains <i>why</i>, so a wrong answer still teaches. Passing: 6/8.</p>
+    <div id="quizbox">
+      <div id="qlevel">Level 1 · Starter</div>
+      <div id="qtext"></div>
+      <div id="opts"></div>
+      <div id="why"></div>
+      <div id="qbar"><span id="score">Question 1/8 · Score 0</span><button id="next">Next →</button></div>
+      <div id="verdict"></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>FAQ</h2>
+    <h3>Is this a replacement for REA?</h3>
+    <p class="mut">No — it <i>is</i> REA, through a smaller door. Same server, same checks, same results. If you remove the size limits (another model), full REA works too.</p>
+    <h3>Why do deep tools fail without extra software?</h3>
+    <p class="mut">Disassembly engines (Ghidra, Hopper, IDA) are professional tools you install yourself; this package never installs them for you. Opening and fingerprinting files works with nothing extra.</p>
+    <h3>Does it upload my files?</h3>
+    <p class="mut">No. Everything runs on your machine; the AI model provider only sees the text you discuss.</p>
+    <h3>Can I allow renaming/commenting tools?</h3>
+    <p class="mut">Yes: set <code>REA_LIGHT_ALLOW_WRITE=1</code> in the server environment. Default stays read-only so accidents can't happen.</p>
+  </section>
+
+  <footer>
+    rea-light-mcp · MIT · <a href="https://github.com/M0-AR/rea-light-mcp">GitHub</a> · <a href="https://www.npmjs.com/package/rea-light-mcp">npm</a> · for lawful research, education and interoperability on software you own or may examine.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var Q=[
+    {l:"Starter",q:"What does an MCP server give your AI assistant?",o:["New skills (tools) it can call","A faster graphics card","A new chat theme"],a:0,w:"MCP (Model Context Protocol) is a standard plug: each server adds callable tools, like search or inspect, to any compatible assistant."},
+    {l:"Starter",q:"What is reverse engineering in one sentence?",o:["Deleting source code","Learning how finished software works without its source code","Compiling code faster"],a:1,w:"You observe a shipped program — buttons, data flow, file layout — using only software you own or may examine."},
+    {l:"Starter",q:"Which rea-light-mcp tool answers a question in one shot?",o:["rea_investigate","rea_search","rea_describe"],a:0,w:"rea_investigate takes a target path + one question and returns markdown with evidence ids. The other two are the find-then-learn steps."},
+    {l:"Builder",q:"Correct everyday loop?",o:["call → search → describe","search → describe → call","describe → call → search"],a:1,w:"Find the capability first (search returns short briefs), read its settings (describe), then run it (call)."},
+    {l:"Builder",q:"How do complex settings reach REA through rea_call?",o:["As a plain text string (args_json)","As deeply nested objects","As file uploads"],a:0,w:"args_json is a string, so strict models only ever see flat settings. The server parses and checks it with full strictness."},
+    {l:"Builder",q:"Rename/comment tools are…?",o:["Blocked by default, allowed with REA_LIGHT_ALLOW_WRITE=1","Always allowed","Removed from REA"],a:0,w:"Read-only default prevents accidents; one variable opts into write actions."},
+    {l:"Pro",q:"Why did strict models reject full REA on every message?",o:["Too many stars on GitHub","One deep tool schema breaks the whole request's depth/size limits","Slow internet"],a:1,w:"Providers check all tool schemas per request: ~139 tools, ~1.9 MB, depth up to 14 — one violator rejects everything, even 'hi'."},
+    {l:"Pro",q:"rea-light-mcp's advertised catalog measures…?",o:["4 tools, ~1.5 KB total, depth ≤ 2, zero references","139 tools, ~1.9 MB","4 tools, ~14 KB each"],a:0,w:"That margin (9× under per-schema caps, 5× under depth caps) is why strict models accept it while full REA is refused."}
+  ];
+  var i=0,score=0,box=document.getElementById('quizbox'),qt=document.getElementById('qtext'),
+      ql=document.getElementById('qlevel'),op=document.getElementById('opts'),why=document.getElementById('why'),
+      sc=document.getElementById('score'),nx=document.getElementById('next'),vd=document.getElementById('verdict');
+  function render(){
+    if(i>=Q.length){finish();return;}
+    var q=Q[i];ql.textContent="Level "+({Starter:1,Builder:2,Pro:3}[q.l])+" · "+q.l;qt.textContent=(i+1)+". "+q.q;
+    op.innerHTML="";why.style.display="none";nx.style.display="none";
+    sc.textContent="Question "+(i+1)+"/"+Q.length+" · Score "+score;
+    q.o.forEach(function(t,k){
+      var b=document.createElement("button");b.className="opt";b.textContent=t;
+      b.onclick=function(){answer(k,b);};op.appendChild(b);
+    });
+  }
+  function answer(k,btn){
+    var q=Q[i],btns=op.children,ok=(k===q.a);
+    for(var j=0;j<btns.length;j++){btns[j].disabled=true;if(j===q.a)btns[j].classList.add("right");}
+    if(ok){score++;}else{btn.classList.add("wrong");}
+    why.innerHTML=(ok?"<b class='ok'>Correct.</b> ":"<b class='bad'>Not quite.</b> ")+q.w;
+    why.style.display="block";sc.textContent="Question "+(i+1)+"/"+Q.length+" · Score "+score;
+    nx.style.display="inline-block";
+  }
+  nx.onclick=function(){i++;render();};
+  function finish(){
+    qt.textContent="";op.innerHTML="";why.style.display="none";nx.style.display="none";
+    ql.textContent="Result";sc.textContent="Final score "+score+"/"+Q.length;
+    var pass=score>=6;
+    vd.style.display="block";
+    vd.innerHTML="<div class='big'>"+(pass?"🏆":"💪")+"</div><h3>"+(pass?"Pro status: you know more than most interview candidates.":"Good start — retake it!")+"</h3><p class='mut'>"+score+"/"+Q.length+(pass?" — now open the Beginner guide and run your first rea_investigate.":" — re-read the Beginner guide above, then try again.")+"</p><button class='opt' style='max-width:220px;margin:0 auto' onclick='location.reload()'>Retake quiz</button>";
+  }
+  render();
+})();
+</script>
+</body>
+</html>

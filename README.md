@@ -12,7 +12,7 @@
 
 **Abstract.** Full reverse-engineering servers expose ~139 tools with deeply nested settings (~1.9&nbsp;MB of schemas, nesting up to depth 14). Strict AI providers (Muse Spark / Gemini / Moonshot enforce a 10-level schema cap; Moonshot additionally caps ~14&nbsp;KB per schema) reject the **entire request** when a single tool breaks the limits — even a plain `hi`. `rea-light-mcp` is a facade: it shows the model **4 flat tools (~1.5&nbsp;KB total, depth ≤ 2, zero references)** and keeps the complete REA catalog server-side behind one persistent REA process. Same server, same validation, same results — no more refusals. If you can ask a question in plain English, you can reverse-engineer with this.
 
-🌐 **[Live interactive page + quiz](https://m0-ar.github.io/rea-light-mcp/preview.html)** · 📦 [npm](https://www.npmjs.com/package/rea-light-mcp) · 💻 [GitHub](https://github.com/M0-AR/rea-light-mcp)
+🌐 **Live interactive page + quiz:** [rea-light-mcp home](https://m0-ar.github.io/rea-light-mcp/) · [preview.html](https://m0-ar.github.io/rea-light-mcp/preview.html) · [docs/preview.html](https://m0-ar.github.io/rea-light-mcp/docs/preview.html) · 📦 [npm](https://www.npmjs.com/package/rea-light-mcp) · 💻 [GitHub](https://github.com/M0-AR/rea-light-mcp)
 
 ## Contents
 
@@ -77,7 +77,7 @@ Real session, recorded against the published package:
 
 ![Demo: live session through rea-light-mcp](https://raw.githubusercontent.com/M0-AR/rea-light-mcp/main/docs/images/demo.gif)
 
-Interactive version with screenshots: [live page](https://m0-ar.github.io/rea-light-mcp/preview.html) ([screenshot](https://raw.githubusercontent.com/M0-AR/rea-light-mcp/main/docs/images/preview.png)). Package page: [npm](https://www.npmjs.com/package/rea-light-mcp) ([screenshot](https://raw.githubusercontent.com/M0-AR/rea-light-mcp/main/docs/images/npm-page.png)).
+Interactive version with screenshots: [home](https://m0-ar.github.io/rea-light-mcp/) · [preview.html](https://m0-ar.github.io/rea-light-mcp/preview.html) · [docs/preview.html](https://m0-ar.github.io/rea-light-mcp/docs/preview.html) ([screenshot](https://raw.githubusercontent.com/M0-AR/rea-light-mcp/main/docs/images/preview.png)). Package page: [npm](https://www.npmjs.com/package/rea-light-mcp) ([screenshot](https://raw.githubusercontent.com/M0-AR/rea-light-mcp/main/docs/images/npm-page.png)).
 
 ## Features
 

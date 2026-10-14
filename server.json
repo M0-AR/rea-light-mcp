@@ -1,0 +1,10 @@
+{
+  "mcpName": "rea-light-mcp",
+  "displayName": "REA Light MCP Server",
+  "description": "Lightweight MCP facade for REA — 4 flat tools (search, describe, call, investigate), full REA behind",
+  "version": "0.1.0",
+  "repository": "https://github.com/md-ar/rea-light-mcp",
+  "homepage": "https://github.com/md-ar/rea-light-mcp",
+  "author": "md-ar",
+  "license": "MIT"
+}
